@@ -10,26 +10,6 @@ esp32:
 status_led:
   pin: GPIO2
 
-# Relais on GPIO19
-switch:
-  - platform: gpio
-    pin: GPIO19
-    name: "Relais"
-    id: relay_1
-    restore_mode: ALWAYS_OFF
-
-# Physical switch on GPIO9, toggle relais
-binary_sensor:
-  - platform: gpio
-    pin:
-      number: GPIO9
-      inverted: true
-      mode: INPUT_PULLUP
-    name: "On-board button (BOOT)"
-    # toggle the relais
-    on_press:
-      - switch.toggle: relay_1
-
 # Internal sensors
 sensor:
   - platform: internal_temperature
