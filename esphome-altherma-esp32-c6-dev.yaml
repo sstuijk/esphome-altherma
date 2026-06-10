@@ -1,0 +1,62 @@
+packages:
+  base: !include base.yaml
+
+esp32:
+  board: esp32-c6-devkitc-1
+  framework:
+    type: esp-idf
+
+# Status LED on GPIO2 (blue LED)
+status_led:
+  pin: GPIO2
+
+# Relais on GPIO19
+switch:
+  - platform: gpio
+    pin: GPIO19
+    name: "Relais"
+    id: relay_1
+    restore_mode: ALWAYS_OFF
+
+# Physical switch on GPIO9, toggle relais
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO9
+      inverted: true
+      mode: INPUT_PULLUP
+    name: "On-board button (BOOT)"
+    # toggle the relais
+    on_press:
+      - switch.toggle: relay_1
+
+# Internal sensors
+sensor:
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    device_class: "temperature"
+    state_class: "measurement"
+    unit_of_measurement: "°C"
+    update_interval: 60s
+
+  - platform: wifi_signal
+    name: "WiFi Signal Strength"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Uptime"
+
+# Enable logging
+logger:
+    
+captive_portal:
+
+#According to the ESP32-C6 datasheet, GPIO16 is UART0 TXD and GPIO17 is UART0 RXD.
+uart:
+  id: uart_bus
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 9600
+  data_bits: 8
+  parity: EVEN
+  stop_bits: 1
