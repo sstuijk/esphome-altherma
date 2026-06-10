@@ -21,6 +21,10 @@ ota:
   - platform: esphome
 
 wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  min_auth_mode: WPA2
+
   # Set up a wifi access point using the device name above
   ap:
 
@@ -39,12 +43,12 @@ uart:
 
 external_components:
 # Uncomment below if you want to "Take Control" in ESPHome Device Builder
-#   - source: github://jjohnsen/esphome-altherma@main
-#     components: [altherma_hub]
+   - source: github://sstuijk/esphome-altherma@main
+     components: [altherma_hub]
 # Comment below if you want to "Take Control" in ESPHome Device Builder
-  - source:
-      type: local
-      path: components
+#  - source:
+#      type: local
+#      path: components
 
 altherma_hub:
   id: altherma_hub_1
@@ -69,10 +73,11 @@ text_sensor:
 
 packages:
   # Uncomment below if you want to "Take Control" in ESPHome Device Builder
+  altherma_sensors: !include github://sstuijk/esphome-altherma/confs/erla_d_ebv_ebb_ebv_d_11_16.yaml@main
   # altherma_sensors: !include github://jjohnsen/esphome-altherma/confs/erga_eh_da_04_08.yaml@main
   # Alternative model mapping for EBSXB16P50DF / ERLA D EBSH-X 11-16kW-ECH2O:
   # altherma_sensors: !include github://jjohnsen/esphome-altherma/confs/erla_d_ebsh_11_16_ech2o.yaml@main
   # Comment below if you want to "Take Control" in ESPHome Device Builder
-  altherma_sensors: !include confs/erga_eh_da_04_08.yaml
+  #altherma_sensors: !include confs/erga_eh_da_04_08.yaml
   # Alternative model mapping for EBSXB16P50DF / ERLA D EBSH-X 11-16kW-ECH2O:
   # altherma_sensors: !include confs/erla_d_ebsh_11_16_ech2o.yaml
