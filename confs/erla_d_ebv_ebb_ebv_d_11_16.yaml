@@ -144,7 +144,7 @@ sensor:
     unit_of_measurement: l/min
     state_class: measurement
     accuracy_decimals: 1  
-  - <<: *alterma_base
+  - <<: *altherma_base
     name: Water pressure
     register: 0x62
     offset: 11
@@ -154,7 +154,7 @@ sensor:
     unit_of_measurement: bar
     state_class: measurement
     accuracy_decimals: 1
-  - <<: *alterma_base
+  - <<: *altherma_base
     name: Water pump signal (0:max-100:stop)
     register: 0x62
     offset: 12
