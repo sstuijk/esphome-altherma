@@ -217,6 +217,18 @@ void AlthermaHub::start_query_(uint8_t regID) {
   this->expected_total_ = 12;  // until byte[2] (length) is known
   this->query_started_at_ = millis();
 
+  // Drain any stale bytes left in the RX buffer (e.g. a late response from a
+  // previously timed-out query). flush() only waits for TX to complete and does
+  // NOT clear RX, so without this the responses desync by one register.
+  uint8_t discarded = 0;
+  uint8_t stale;
+  while (uart->available() && uart->read_byte(&stale)) {
+    discarded++;
+  }
+  if (discarded > 0) {
+    ESP_LOGW(TAG, "Discarded %u stale RX byte(s) before querying 0x%02x", discarded, regID);
+  }
+
   ESP_LOGV(TAG, "Querying register 0x%02x... CRC: 0x%02x", regID, command[3]);
   uart->flush();
   uart->write_array(command, 4);
