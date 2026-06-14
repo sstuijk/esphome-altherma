@@ -142,7 +142,7 @@ namespace esphome
       Converter *converter_{nullptr};
 
       static constexpr size_t RX_BUFFER_SIZE = 64;
-      static constexpr uint32_t QUERY_TIMEOUT_MS = 300;
+      static constexpr uint32_t QUERY_TIMEOUT_MS = 30000;
 
       QueryState query_state_{QueryState::IDLE};
       bool poll_active_{false};
