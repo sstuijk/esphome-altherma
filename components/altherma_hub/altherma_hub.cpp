@@ -241,14 +241,14 @@ void AlthermaHub::read_response_() {
   static MockUART mock_uart;
   uart = &mock_uart;
 #endif
-ESP_LOGE(TAG, "Time: %ld %ld", millis(), this->query_started_at_);
+
   if (millis() - this->query_started_at_ > QUERY_TIMEOUT_MS) {
     if (this->manual_query_active_) {
-      /*this->publish_manual_query_statusf_(ESP_LOG_ERROR,
+      this->publish_manual_query_statusf_(ESP_LOG_ERROR,
                                           "Manual query failed reg=0x%02X: timeout waiting for response",
-                                          this->current_register_);*/
+                                          this->current_register_);
     } else {
-     /* ESP_LOGE(TAG, "Timeout waiting for response for register 0x%02x", this->current_register_);*/
+     ESP_LOGE(TAG, "Timeout waiting for response for register 0x%02x", this->current_register_);
     }
     this->advance_register_();
     return;
