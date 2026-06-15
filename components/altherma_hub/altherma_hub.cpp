@@ -241,7 +241,7 @@ void AlthermaHub::read_response_() {
   static MockUART mock_uart;
   uart = &mock_uart;
 #endif
-
+ESP_LOGE(TAG, "Time: %f %f", millis(), this->query_started_at_);
   if (millis() - this->query_started_at_ > QUERY_TIMEOUT_MS) {
     if (this->manual_query_active_) {
       this->publish_manual_query_statusf_(ESP_LOG_ERROR,
