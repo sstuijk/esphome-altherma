@@ -172,7 +172,7 @@ bool AlthermaHub::decode_label(AlthermaSensorBase *sensor, unsigned char *frame,
 
   const size_t payload_start = static_cast<size_t>(offset) + 3;
   const size_t payload_end = payload_start + static_cast<size_t>(data_size);
-  const size_t frame_data_end = frame_len - 1;  // exclude CRC byte
+  const size_t frame_data_end = frame_len;// - 1;  // exclude CRC byte
   if (payload_start >= frame_data_end || payload_end > frame_data_end) {
     ESP_LOGE(TAG,
              "Out-of-bounds decode for '%s' reg=0x%02x offset=%d size=%d frame_len=%d",
