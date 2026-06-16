@@ -115,6 +115,10 @@ namespace esphome
       void loop() override;
       void queue_manual_query(std::string registry_id, int32_t offset, int32_t convid, int32_t datasize);
 
+      #ifdef USE_MOCK_UART
+        MockUART mock_uart;
+      #endif
+
     protected:
       enum class ManualQueryStatusLevel : uint8_t {
         INFO,
