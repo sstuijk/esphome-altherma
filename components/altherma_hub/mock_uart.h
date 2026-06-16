@@ -17,6 +17,7 @@ namespace esphome
             void write_array(const uint8_t *data, size_t len) override {
                 ESP_LOGI(TAG_MOCK, "Write: [%02x %02x %02x %02x]", data[0], data[1], data[2], data[3]);
                 generate_response(data[2]);
+                ESP_LOGI(TAG_KOCK, "Written to RX buffer %d", available());
             }
 
             size_t available() override {
