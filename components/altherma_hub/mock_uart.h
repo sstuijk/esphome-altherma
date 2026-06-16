@@ -25,6 +25,7 @@ namespace esphome
             }
 
             esphome::uart::UARTFlushResult flush() override {
+                ESP_LOGI(TAG_MOCK, "Flushing...");
                 while (!rx_buffer_.empty()) {
                     rx_buffer_.pop();
                 }
@@ -37,6 +38,7 @@ namespace esphome
                 
                 *data = rx_buffer_.front();
                 rx_buffer_.pop();
+                ESP_LOGI(TAG_MOCK, "Read byte: %d", available());
                 return true;
             }
 
@@ -54,6 +56,7 @@ namespace esphome
                 data[i] = rx_buffer_.front();
                 rx_buffer_.pop();
                 }
+                ESP_LOGI(TAG_MOCK, "Read array: %d", available());
                 return true;
             }
 
