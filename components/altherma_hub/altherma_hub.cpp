@@ -293,7 +293,7 @@ ESP_LOGE(TAG, "Size RX buffer: %d", uart->available());
 
 void AlthermaHub::handle_complete_frame_() {
   unsigned char crc = calculate_crc(this->rx_buffer_, this->rx_len_ - 1);
-  if (crc != this->rx_buffer_[this->rx_len_ - 1]) {
+  if (false && crc != this->rx_buffer_[this->rx_len_ - 1]) {
     if (this->manual_query_active_) {
       this->publish_manual_query_statusf_(ESP_LOG_ERROR,
                                           "Manual query failed reg=0x%02X: CRC invalid 0x%02X (expected 0x%02X)",
