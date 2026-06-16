@@ -6,6 +6,7 @@
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/api/custom_api_device.h"
 #include "esphome/components/uart/uart.h"
+#include "mock_uart.h"
 #include <vector>
 
 class LabelDef;
