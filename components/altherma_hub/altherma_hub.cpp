@@ -205,7 +205,7 @@ void AlthermaHub::start_query_(uint8_t regID) {
   auto uart = this->parent_;
 #ifdef USE_MOCK_UART
   ESP_LOGW(TAG, "Using MockUART");
-  uart = this->mock_uart;
+  uart = &this->mock_uart;
 #endif
 
   uint8_t command[] = {0x03, 0x40, regID, 0x00};
@@ -237,7 +237,7 @@ void AlthermaHub::start_query_(uint8_t regID) {
 void AlthermaHub::read_response_() {
   auto uart = this->parent_;
 #ifdef USE_MOCK_UART
-  uart = this->mock_uart;
+  uart = &this->mock_uart;
 #endif
 
   if (millis() - this->query_started_at_ > QUERY_TIMEOUT_MS) {
