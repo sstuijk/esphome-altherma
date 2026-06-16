@@ -288,6 +288,7 @@ ESP_LOGE(TAG, "Size RX buffer: %d", uart->available());
   }
 
   if (this->rx_len_ >= this->expected_total_) {
+    ESP_LOGE(TAG, "Full frame ready");
     this->handle_complete_frame_();
   }
 }
