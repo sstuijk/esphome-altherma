@@ -39,7 +39,7 @@ void AlthermaHub::register_sensor(AlthermaSensorBase *sensor) {
 }
 
 void AlthermaHub::setup() {
-  I(TAG, "Altherma hub setup");
+  ESP_LOGI(TAG, "Altherma hub setup");
   this->converter_ = new Converter();
   
   this->register_service(&AlthermaHub::queue_manual_query, "query_register",
@@ -50,14 +50,14 @@ AlthermaHub::~AlthermaHub() {
   delete this->converter_;
 }
 
-void AlthermaHub::publish_manual_query_statusf_(_level_t level, const char *fmt, ...) {
+void AlthermaHub::publish_manual_query_statusf_(esp_log_level_t level, const char *fmt, ...) {
   char message[384];
   va_list args;
   va_start(args, fmt);
   vsnprintf(message, sizeof(message), fmt, args);
   va_end(args);
 
-  _write(level, TAG, "%s", message);
+  esp_log_write(level, TAG, "%s", message);
 
   if (this->query_result_text_sensor_ != nullptr) {
     this->query_result_text_sensor_->publish_state(message);
@@ -66,16 +66,16 @@ void AlthermaHub::publish_manual_query_statusf_(_level_t level, const char *fmt,
 
 void AlthermaHub::update() {
   if (this->registers_.empty()) {
-    V(TAG, "No registers configured");
+    ESP_LOGV(TAG, "No registers configured");
     return;
   }
 
   if (this->poll_active_) {
-    W(TAG, "Previous poll cycle still active, skipping tick");
+    ESP_LOGW(TAG, "Previous poll cycle still active, skipping tick");
     return;
   }
 
-  D(TAG, "Update start");
+  ESP_LOGD(TAG, "Update start");
   this->cycle_started_at_ = millis();
   this->begin_poll_cycle_();
 }
@@ -112,7 +112,7 @@ void AlthermaHub::loop() {
 
 void AlthermaHub::queue_manual_query(std::string registry_id, int32_t offset, int32_t convid, int32_t datasize) {
   if (this->manual_query_active_ || this->manual_query_pending_) {
-    this->publish_manual_query_statusf_(_WARN,
+    this->publish_manual_query_statusf_(ESP_LOG_WARN,
                                         "Manual query rejected: previous manual query still in progress");
     return;
   }
@@ -122,19 +122,19 @@ void AlthermaHub::queue_manual_query(std::string registry_id, int32_t offset, in
   
   long value = std::strtol(registry_id.c_str(), &end, 0);  // base 0: auto-detect 0x, decimal, octal
   if (end == registry_id.c_str() || *end != '\0' || errno != 0) {
-    this->publish_manual_query_statusf_(_ERROR,
+    this->publish_manual_query_statusf_(ESP_LOG_ERROR,
                                         "Manual query rejected: invalid register: %s", registry_id.c_str());
     return;
   }
 
   if (value < 0 || value > 0xFF) {
-    this->publish_manual_query_statusf_(_ERROR,
+    this->publish_manual_query_statusf_(ESP_LOG_ERROR,
                                         "Manual query rejected: register out of range: %ld", value);
     return;
   }
 
   if (offset < 0 || datasize <= 0) {
-    this->publish_manual_query_statusf_(_ERROR,
+    this->publish_manual_query_statusf_(ESP_LOG_ERROR,
                                         "Manual query rejected: invalid bounds offset=%d datasize=%d", offset, datasize);
     return;
   }
@@ -145,7 +145,7 @@ void AlthermaHub::queue_manual_query(std::string registry_id, int32_t offset, in
   this->manual_datasize_ = datasize;
   this->manual_query_pending_ = true;
 
-  this->publish_manual_query_statusf_(_INFO,
+  this->publish_manual_query_statusf_(ESP_LOG_INFO,
                                       "Manual query accepted reg=0x%02lX offset=%d convid=%d datasize=%d",
                                       value, offset, convid, datasize);
 
@@ -159,14 +159,14 @@ void AlthermaHub::queue_manual_query(std::string registry_id, int32_t offset, in
 
 bool AlthermaHub::decode_label(AlthermaSensorBase *sensor, unsigned char *frame, size_t frame_len, LabelDef &out) {
   if (frame_len < 4) {
-    E(TAG, "Frame too short for register 0x%02x: len=%d", sensor->registry_id(), frame_len);
+    ESP_LOGE(TAG, "Frame too short for register 0x%02x: len=%d", sensor->registry_id(), frame_len);
     return false;
   }
 
   const int offset = sensor->offset();
   const int data_size = sensor->datasize();
   if (offset < 0 || data_size <= 0) {
-    E(TAG, "Invalid sensor bounds for '%s': offset=%d size=%d", sensor->get_name().c_str(), offset, data_size);
+    ESP_LOGE(TAG, "Invalid sensor bounds for '%s': offset=%d size=%d", sensor->get_name().c_str(), offset, data_size);
     return false;
   }
 
@@ -174,7 +174,7 @@ bool AlthermaHub::decode_label(AlthermaSensorBase *sensor, unsigned char *frame,
   const size_t payload_end = payload_start + static_cast<size_t>(data_size);
   const size_t frame_data_end = 1000;//frame_len - 1;  // exclude CRC byte
   if (payload_start >= frame_data_end || payload_end > frame_data_end) {
-    E(TAG,
+    ESP_LOGE(TAG,
              "Out-of-bounds decode for '%s' reg=0x%02x offset=%d size=%d frame_len=%d",
              sensor->get_name().c_str(), sensor->registry_id(), offset, data_size, frame_len);
     return false;
@@ -204,7 +204,7 @@ void AlthermaHub::begin_poll_cycle_() {
 void AlthermaHub::start_query_(uint8_t regID) {
   auto uart = this->parent_;
 #ifdef USE_MOCK_UART
-  W(TAG, "Using MockUART");
+  ESP_LOGW(TAG, "Using MockUART");
   uart = &this->mock_uart;
 #endif
 
@@ -225,10 +225,10 @@ void AlthermaHub::start_query_(uint8_t regID) {
     discarded++;
   }
   if (discarded > 0) {
-    W(TAG, "Discarded %u stale RX byte(s) before querying 0x%02x", discarded, regID);
+    ESP_LOGW(TAG, "Discarded %u stale RX byte(s) before querying 0x%02x", discarded, regID);
   }
 
-  V(TAG, "Querying register 0x%02x... CRC: 0x%02x", regID, command[3]);
+  ESP_LOGV(TAG, "Querying register 0x%02x... CRC: 0x%02x", regID, command[3]);
   uart->flush();
   uart->write_array(command, 4);
   this->query_state_ = QueryState::READ_RESPONSE;
@@ -242,16 +242,16 @@ void AlthermaHub::read_response_() {
 
   if (millis() - this->query_started_at_ > QUERY_TIMEOUT_MS) {
     if (this->manual_query_active_) {
-      this->publish_manual_query_statusf_(_ERROR,
+      this->publish_manual_query_statusf_(ESP_LOG_ERROR,
                                           "Manual query failed reg=0x%02X: timeout waiting for response",
                                           this->current_register_);
     } else {
-     E(TAG, "Timeout waiting for response for register 0x%02x", this->current_register_);
+     ESP_LOGE(TAG, "Timeout waiting for response for register 0x%02x", this->current_register_);
     }
     this->advance_register_();
     return;
   }
-
+ESP_LOGE(TAG, "Size RX buffer: %d", uart->available());
   const size_t available = uart->available();
   if (available == 0) {
     return;
