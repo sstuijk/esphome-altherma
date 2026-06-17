@@ -251,7 +251,7 @@ void AlthermaHub::read_response_() {
     this->advance_register_();
     return;
   }
-ESP_LOGE(TAG, "Size RX buffer: %d", uart->available());
+
   const size_t available = uart->available();
   if (available == 0) {
     return;
