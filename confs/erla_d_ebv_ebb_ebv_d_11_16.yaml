@@ -295,7 +295,7 @@ text_sensor:
   datasize: 1
   filters:
       - lambda: |-
-          if (x == pdFALSE) return {"Cool"};
+          if (x == "FALSE") return {"Cool"};
           else return {"Heat"};
           
 
