@@ -155,12 +155,14 @@ sensor:
     state_class: measurement
     accuracy_decimals: 1
   - <<: *altherma_base
-    name: Water pump signal (0:max-100:stop)
+    name: Water pump signal (0:stop-100:max)
     register: 0x62
     offset: 12
     convid: 152
     datasize: 1
-    accuracy_decimals: 1    
+    accuracy_decimals: 1   
+    filters:
+      - lambda: return 100.0 - x;
   - <<: *current
     name: Current measured by CT sensor of L1
     register: 0x63
