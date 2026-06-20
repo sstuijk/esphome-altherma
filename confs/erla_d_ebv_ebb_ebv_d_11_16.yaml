@@ -283,7 +283,7 @@ text_sensor:
       - lambda: |-
           if (x == "FALSE") return {"Cool"};
           else return {"Heat"};
-- <<: *test
+- <<: *text
   name: 3way valve
   register: 0x60
   offset: 12
