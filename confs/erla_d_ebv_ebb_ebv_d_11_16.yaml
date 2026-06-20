@@ -279,7 +279,7 @@ text_sensor:
   offset: 12
   convid: 307
   datasize: 1
-  #filters:
+  filters:
       - lambda: |-
           if (x == "OFF") return {"Heat"};
           else return {"Cool"};
