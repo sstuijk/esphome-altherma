@@ -281,7 +281,7 @@ text_sensor:
   datasize: 1
   filters:
       - lambda: |-
-          if (x == "FALSE") return {"Cool"};
+          if (x == "OFF") return {"Cool"};
           else return {"Heat"};
 - <<: *text
   name: 3way valve
