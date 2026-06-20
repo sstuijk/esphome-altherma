@@ -303,7 +303,7 @@ void AlthermaHub::handle_complete_frame_() {
     this->advance_register_();
     return;
   }
-    
+
   if (this->rx_buffer_[1] != this->current_register_) {
     if (this->manual_query_active_) {
       this->publish_manual_query_statusf_(ESP_LOG_ERROR,
