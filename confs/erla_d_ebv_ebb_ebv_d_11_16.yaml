@@ -259,6 +259,16 @@ binary_sensor:
   offset: 8
   convid: 302
   datasize: 1
+- <<: *binary
+  name: 2way valve
+  register: 0x60
+  offset: 12
+  convid: 307
+  datasize: 1
+  #filters:
+  #    - lambda: |-
+  #        if (x == "OFF") return {"Cool"};
+  #        else return {"Heat"};
 
 text_sensor:
 - <<: *text
@@ -273,16 +283,6 @@ text_sensor:
   offset: 2
   convid: 315
   datasize: 1
-- <<: *text
-  name: 2way valve
-  register: 0x60
-  offset: 12
-  convid: 307
-  datasize: 1
-  filters:
-      - lambda: |-
-          if (x == "OFF") return {"Cool"};
-          else return {"Heat"};
 - <<: *text
   name: 3way valve
   register: 0x60
