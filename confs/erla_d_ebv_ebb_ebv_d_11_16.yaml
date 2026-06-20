@@ -295,7 +295,7 @@ text_sensor:
   datasize: 1
   filters:
       - lambda: |-
-          if (id(system_mode_binary).state) return {"Cool"};
-          if (!id(system_mode_binary).state) return {"Heat"};
-          return x;
+          if (x == pdFALSE) return {"Cool"};
+          else return {"Heat"};
+          
 
