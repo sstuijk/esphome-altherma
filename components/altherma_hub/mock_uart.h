@@ -17,7 +17,6 @@ namespace esphome
             void write_array(const uint8_t *data, size_t len) override {
                 ESP_LOGI(TAG_MOCK, "Write: [%02x %02x %02x %02x]", data[0], data[1], data[2], data[3]);
                 generate_response(data[2]);
-                ESP_LOGI(TAG_MOCK, "Written to RX buffer %d", available());
             }
 
             size_t available() override {
@@ -25,7 +24,6 @@ namespace esphome
             }
 
             esphome::uart::UARTFlushResult flush() override {
-                ESP_LOGI(TAG_MOCK, "Flushing...");
                 while (!rx_buffer_.empty()) {
                     rx_buffer_.pop();
                 }
@@ -38,7 +36,6 @@ namespace esphome
                 
                 *data = rx_buffer_.front();
                 rx_buffer_.pop();
-                ESP_LOGI(TAG_MOCK, "Read byte: %d", available());
                 return true;
             }
 
@@ -56,7 +53,6 @@ namespace esphome
                 data[i] = rx_buffer_.front();
                 rx_buffer_.pop();
                 }
-                ESP_LOGI(TAG_MOCK, "Read array: %d", available());
                 return true;
             }
 
@@ -94,18 +90,6 @@ namespace esphome
                     // Generic response for unknown registers
                     response = {
                         0x40, reg_id, 0x08,
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 
-                        0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 
                         0x00, 0x00, 0x00, 0x00,
                         0x00, 0x00, 0x00, 0x00};
                     break;
