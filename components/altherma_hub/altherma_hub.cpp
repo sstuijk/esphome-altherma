@@ -246,7 +246,7 @@ void AlthermaHub::read_response_() {
                                           "Manual query failed reg=0x%02X: timeout waiting for response",
                                           this->current_register_);
     } else {
-     ESP_LOGE(TAG, "Timeout waiting for response for register 0x%02x", this->current_register_);
+      ESP_LOGE(TAG, "Timeout waiting for response for register 0x%02x", this->current_register_);
     }
     this->advance_register_();
     return;
@@ -286,14 +286,12 @@ void AlthermaHub::read_response_() {
   }
 
   if (this->rx_len_ >= this->expected_total_) {
-    ESP_LOGE(TAG, "Full frame ready");
     this->handle_complete_frame_();
   }
 }
 
 void AlthermaHub::handle_complete_frame_() {
   unsigned char crc = calculate_crc(this->rx_buffer_, this->rx_len_ - 1);
-  /*
   if (crc != this->rx_buffer_[this->rx_len_ - 1]) {
     if (this->manual_query_active_) {
       this->publish_manual_query_statusf_(ESP_LOG_ERROR,
@@ -305,7 +303,7 @@ void AlthermaHub::handle_complete_frame_() {
     this->advance_register_();
     return;
   }
-  */  
+    
   if (this->rx_buffer_[1] != this->current_register_) {
     if (this->manual_query_active_) {
       this->publish_manual_query_statusf_(ESP_LOG_ERROR,
