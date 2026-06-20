@@ -43,7 +43,6 @@
 sensor:
   - <<: *temp
     name: R1T-Outdoor air temp.
-    friendly_name: Outdoor air temperature
     register: 0x20
     offset: 0
     convid: 105
