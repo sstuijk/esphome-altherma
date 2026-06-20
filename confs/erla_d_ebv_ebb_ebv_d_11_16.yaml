@@ -167,14 +167,12 @@ sensor:
     offset: 14
     convid: 161
     datasize: 1
-  
   - <<: *current
     name: Current measured by CT sensor of L2
     register: 0x63
     offset: 15
     convid: 161
     datasize: 1
-  
   - <<: *current
     name: Current measured by CT sensor of L3
     register: 0x63
@@ -224,18 +222,6 @@ binary_sensor:
   register: 0x60
   offset: 11
   convid: 305
-  datasize: 1
-#- <<: *binary
-#  name: 2way valve(On:Heat_Off:Cool)
-#  register: 0x60
-#  offset: 12
-#  convid: 307
-#  datasize: 1
-- <<: *binary
-  name: 3way valve(On:DHW_Off:Space)
-  register: 0x60
-  offset: 12
-  convid: 306
   datasize: 1
 - <<: *binary
   name: BSH
@@ -297,5 +283,15 @@ text_sensor:
       - lambda: |-
           if (x == "FALSE") return {"Cool"};
           else return {"Heat"};
+- <<: *test
+  name: 3way valve
+  register: 0x60
+  offset: 12
+  convid: 306
+  datasize: 1
+  filters:
+      - lambda: |-
+          if (x == "FALSE") return {"Space"};
+          else return {"DHW"};
           
 
