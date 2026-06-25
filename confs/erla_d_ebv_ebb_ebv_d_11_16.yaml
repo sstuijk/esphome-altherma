@@ -283,8 +283,8 @@ text_sensor:
   datasize: 1
   filters:
       - lambda: |-
-          if (x == "OFF") return {"Heat"};
-          else return {"Cool"};
+          if (x == "OFF") return {"Cool"};
+          else return {"Heat"};
 - <<: *text
   name: 3way valve
   register: 0x60
